@@ -11,4 +11,4 @@ export const firebaseConfig = {
 
 // UID da conta do administrador (Authentication > Usuários > coluna "UID do usuário").
 // Preencha depois de criar a sua conta no site.
-export const ADMIN_UID = "COLE_O_UID_DO_ADMIN";
+export const ADMIN_UID = "ah9V54coxLNWiB8PWMCMFPV0wlG3";
