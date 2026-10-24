@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>C’thonia Bank</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--preto:#060506;--grafite:#141012;--ouro:#B89B5E;--ouro-claro:#D6BF8A;--sangue:#8A1020;--marfim:#EDE5D3;--cinza:#A39A8A;
+--serif:"Cormorant Garamond",Georgia,serif;--sans:"Figtree",system-ui,sans-serif;color-scheme:dark;box-sizing:border-box;
+padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--preto);color:var(--marfim);font:400 1rem/1.6 var(--sans);overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(ellipse 60% 40% at 85% 0%,rgba(138,16,32,.28),transparent 70%)}
+a{color:inherit;text-decoration:none}[hidden]{display:none!important}
+:focus-visible{outline:2px solid var(--ouro-claro);outline-offset:3px}
+.wrap{width:min(1080px,100% - 2.5rem);margin-inline:auto;position:relative}
+header{padding:1.25rem 0;border-bottom:1px solid rgba(184,155,94,.25)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.marca{display:flex;align-items:center;gap:.8rem}.marca svg{width:44px;height:44px;flex:none}
+.marca b{display:block;font:500 1.45rem/1 var(--serif);letter-spacing:.32em;color:var(--ouro-claro)}
+.marca small{display:block;font:500 .62rem/1 var(--sans);letter-spacing:.9em;color:var(--cinza);margin-top:.35rem}
+nav{display:flex;gap:1.6rem;align-items:center}nav a{color:var(--cinza);font-size:.95rem}nav a:hover{color:var(--marfim)}
+.btn{display:inline-block;border:1px solid var(--ouro);color:var(--ouro-claro);background:transparent;padding:.8rem 1.5rem;font:500 .95rem var(--sans);cursor:pointer;transition:background .2s,color .2s}
+.btn:hover{background:var(--ouro);color:var(--preto)}
+.btn.cheio{background:var(--sangue);border-color:var(--sangue);color:var(--marfim)}.btn.cheio:hover{background:#A3132A;border-color:#A3132A}
+.btn.mini{padding:.4rem .9rem;font-size:.85rem}
+@media(max-width:720px){nav a{display:none}}
+.hero{padding:clamp(3.5rem,10vw,7rem) 0 clamp(3rem,8vw,6rem);display:grid;grid-template-columns:1.3fr .7fr;gap:2rem;align-items:center}
+.hero h1{font:500 clamp(2.8rem,8vw,5.6rem)/1.02 var(--serif);margin:0 0 1.4rem}
+.hero p{max-width:34ch;color:var(--cinza);font-size:1.12rem;margin:0 0 2rem}
+.acoes{display:flex;gap:1rem;flex-wrap:wrap}
+.selo{justify-self:center;width:min(300px,70vw);aspect-ratio:1}.selo svg{width:100%;height:100%}
+.gota{animation:pulsa 4s ease-in-out infinite}@keyframes pulsa{0%,100%{opacity:.55}50%{opacity:1}}
+@media(max-width:720px){.hero{grid-template-columns:1fr}.selo{order:-1;width:150px;justify-self:start}}
+section{padding:clamp(2.5rem,7vw,4.5rem) 0;border-top:1px solid rgba(184,155,94,.25)}
+h2{font:500 clamp(1.9rem,4.5vw,2.8rem)/1.1 var(--serif);margin:0 0 1.8rem;color:var(--ouro-claro)}
+h3{font:500 1.6rem/1.1 var(--serif);margin:0 0 .8rem}
+.linha{display:grid;grid-template-columns:minmax(150px,.5fr) 1fr auto;gap:1.5rem;align-items:baseline;padding:1.5rem 0;border-bottom:1px solid rgba(237,229,211,.12)}
+.linha h3{font-size:2rem;margin:0}.linha p{margin:0;color:var(--cinza);max-width:46ch}.linha a{color:var(--ouro)}
+@media(max-width:720px){.linha{grid-template-columns:1fr;gap:.5rem}}
+.sim{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:start}
+.painel{background:var(--grafite);border:1px solid rgba(184,155,94,.35);padding:1.6rem}
+.campo{margin-bottom:1.4rem}.campo label{display:flex;justify-content:space-between;margin-bottom:.5rem;color:var(--cinza);font-size:.95rem}
+.campo output{color:var(--marfim);font-weight:600}input[type=range]{width:100%;accent-color:var(--ouro)}
+.parcela{font:500 2.6rem/1 var(--serif);color:var(--ouro-claro)}.parcela small{font:400 1rem var(--sans);color:var(--cinza)}
+@media(max-width:820px){.sim{grid-template-columns:1fr;gap:1.5rem}}
+footer{border-top:1px solid rgba(184,155,94,.25);padding:2.5rem 0 3rem;color:var(--cinza);font-size:.85rem}footer p{max-width:70ch;margin:.4rem 0}.sangue{color:#C0394B}
+/* painel da conta */
+.saldo{font:500 clamp(2.6rem,9vw,4.4rem)/1 var(--serif);color:var(--ouro-claro);margin:.3rem 0 0}
+.grade{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:2rem}@media(max-width:820px){.grade{grid-template-columns:1fr}}
+input,select{display:block;width:100%;margin:.4rem 0 1rem;padding:.8rem;background:var(--preto);border:1px solid rgba(237,229,211,.25);color:var(--marfim);font:inherit}
+label.t{display:block;color:var(--cinza);font-size:.9rem}
+.item{display:flex;justify-content:space-between;gap:1rem;align-items:center;padding:.8rem 0;border-bottom:1px solid rgba(237,229,211,.12);font-size:.95rem}
+.item small{display:block;color:var(--cinza)}.pos{color:var(--ouro-claro)}.neg{color:#C0394B}
+.pendente{color:var(--ouro)}.aprovado{color:#7DB58B}.recusado{color:#C0394B}
+.vazio{color:var(--cinza);font-size:.95rem}.aviso{color:var(--ouro-claro);font-size:.9rem;min-height:1.4em;margin:.4rem 0}
+dialog{background:var(--grafite);color:var(--marfim);border:1px solid var(--ouro);padding:2rem;width:min(420px,calc(100% - 2rem))}
+dialog::backdrop{background:rgba(0,0,0,.75)}.abas{display:flex;gap:1.2rem;margin-bottom:1.2rem}
+.abas button{background:none;border:0;border-bottom:2px solid transparent;color:var(--cinza);font:500 1.05rem var(--sans);padding:.3rem 0;cursor:pointer}
+.abas button.on{color:var(--ouro-claro);border-color:var(--ouro)}
+.lk{background:none;border:0;color:var(--cinza);text-decoration:underline;cursor:pointer;font:inherit;font-size:.85rem;padding:0}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="emb" viewBox="0 0 100 100">
+<circle cx="50" cy="50" r="47" fill="none" stroke="#B89B5E" stroke-width="1.5"/><circle cx="50" cy="50" r="42" fill="none" stroke="#B89B5E" stroke-width=".6" opacity=".6"/>
+<path d="M69 33 A25 25 0 1 0 69 67" fill="none" stroke="#D6BF8A" stroke-width="5"/><circle class="gota" cx="69" cy="67" r="4.6" fill="#8A1020"/>
+<path d="M50 3 V12 M50 88 V97" stroke="#B89B5E" stroke-width="1.5"/></symbol></svg>
+
+<header><div class="wrap">
+<a class="marca" href="#" aria-label="C’thonia Bank"><svg aria-hidden="true"><use href="#emb"/></svg><span><b>C’THONIA</b><small>BANK</small></span></a>
+<nav><a href="#produtos">Contas</a><a href="#credito">Crédito</a><a href="#produtos">Investimentos</a><button class="btn" id="btnConta">Acessar minha conta</button></nav>
+</div></header>
+
+<div id="publico">
+<main>
+<div class="wrap hero"><div>
+<h1>Seu futuro começa aqui.</h1><p>Soluções financeiras para uma nova era de prosperidade.</p>
+<div class="acoes"><button class="btn cheio" data-abrir>Acessar minha conta</button><a class="btn" href="#credito">Simular crédito</a></div></div>
+<div class="selo"><svg aria-hidden="true"><use href="#emb"/></svg></div></div>
+<section id="produtos"><div class="wrap"><h2>O que o C’thonia oferece</h2>
+<div class="linha"><h3>Contas</h3><p>Conta digital sem tarifa de abertura, aberta a todos os moradores da cidade, sem exigência de comprovação de renda.</p><a href="#" data-abrir>Abrir conta</a></div>
+<div class="linha"><h3>Crédito</h3><p>Aprovação em minutos, parcelas que cabem no bolso e pagamento só depois que você começar a trabalhar.</p><a href="#credito">Simular</a></div>
+<div class="linha"><h3>Investimentos</h3><p>Participe do crescimento das empresas do grupo C’thon e ajude a construir a cidade do amanhã.</p><a href="#" data-abrir>Conhecer</a></div>
+</div></section>
+<section id="credito"><div class="wrap sim"><div><h2>Quanto você precisa hoje?</h2><p style="color:var(--cinza);max-width:36ch;margin:0">Escolha o valor e o prazo. Simulação sem compromisso.</p></div>
+<div class="painel"><div class="campo"><label for="valor">Valor <output id="ov"></output></label><input id="valor" type="range" min="500" max="20000" step="500" value="5000"></div>
+<div class="campo"><label for="prazo">Prazo <output id="op"></output></label><input id="prazo" type="range" min="6" max="60" step="6" value="24"></div>
+<div style="border-top:1px solid rgba(237,229,211,.15);padding-top:1.2rem"><div class="parcela"><span id="rp"></span> <small>por mês</small></div><p id="rt" style="margin:.6rem 0 0;color:var(--cinza)"></p></div></div></div></section>
+</main>
+<footer><div class="wrap"><p>© C’thonia Bank S.A. Um banco do grupo C’thon. Todos os direitos reservados.</p>
+<p>Crédito sujeito a análise. Taxa de 3,9% ao mês. Garantias aceitas: imóveis, veículos, tempo e <span class="sangue">esperança</span>.</p>
+<p>Projeto fictício de RPG. Nenhum valor aqui é dinheiro real.</p></div></footer>
+</div>
+
+<main id="app" hidden><div class="wrap" style="padding:2.5rem 0 4rem">
+<p style="margin:0;color:var(--cinza)">Olá, <span id="nomeConta"></span></p>
+<p class="saldo" id="saldo">—</p><p style="margin:.3rem 0 0;color:var(--cinza)">Saldo disponível</p>
+<div class="grade">
+<div class="painel"><h3>Pedir depósito</h3>
+<label class="t">Valor<input id="dv" type="number" min="1" max="1000000" step="1" inputmode="numeric"></label>
+<label class="t">Motivo (opcional)<input id="dm" maxlength="140"></label>
+<button class="btn cheio" id="dep">Enviar pedido</button><p class="aviso" id="avDep"></p>
+<p class="vazio">O valor só entra no saldo depois que o administrador aprovar.</p>
+<h3 style="margin-top:1.6rem">Meus pedidos</h3><div id="meusPed"></div></div>
+<div class="painel"><h3>Extrato</h3><div id="extrato"></div></div></div>
+<div id="admin" hidden><h2 style="margin-top:3rem">Administração</h2><div class="grade">
+<div class="painel"><h3>Depósitos pendentes</h3><div id="pend"></div></div>
+<div class="painel"><h3>Ajustar saldo</h3>
+<label class="t">Conta<select id="aj"></select></label>
+<label class="t">Valor (negativo para retirar)<input id="ajv" type="number" step="1" inputmode="numeric"></label>
+<label class="t">Descrição<input id="am" maxlength="80"></label>
+<button class="btn cheio" id="ajb">Aplicar</button><p class="aviso" id="avAj"></p></div></div></div>
+</div></main>
+
+<dialog id="dlg">
+<div class="abas"><button id="tE" class="on">Entrar</button><button id="tC">Criar conta</button></div>
+<label class="t" id="lNome" hidden>Nome do personagem<input id="n" maxlength="40" autocomplete="off"></label>
+<label class="t">E-mail<input id="e" type="email" autocomplete="email"></label>
+<label class="t">Senha (mínimo 6)<input id="s" type="password" autocomplete="current-password"></label>
+<p class="aviso" id="av"></p>
+<div style="display:flex;gap:.8rem;align-items:center;flex-wrap:wrap"><button class="btn cheio" id="ok">Entrar</button><button class="btn" id="fx">Fechar</button><button class="lk" id="esq">Esqueci minha senha</button></div>
+</dialog>
+
+<script type="module">
+import {firebaseConfig,ADMIN_UID} from "./firebase-config.js";
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,sendPasswordResetEmail,deleteUser} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,doc,collection,writeBatch,onSnapshot,query,where,addDoc,serverTimestamp,runTransaction} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const $=id=>document.getElementById(id),brl=n=>n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const dt=t=>t&&t.toDate?t.toDate().toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}):"agora";
+const ord=l=>l.sort((a,b)=>(b.criadoEm?.seconds??9e9)-(a.criadoEm?.seconds??9e9));
+/* simulador */
+function sim(){const v=+$("valor").value,n=+$("prazo").value,i=.039,p=v*i/(1-Math.pow(1+i,-n));
+$("ov").textContent=brl(v);$("op").textContent=n+" meses";$("rp").textContent=brl(p);$("rt").textContent="Total a pagar: "+brl(p*n)}
+$("valor").oninput=$("prazo").oninput=sim;sim();
+/* firebase */
+const ok=!String(firebaseConfig.apiKey).startsWith("COLE");let auth,db,subs=[],user=null,modo="e";
+if(ok){const app=initializeApp(firebaseConfig);auth=getAuth(app);db=getFirestore(app)}
+const dlg=$("dlg");
+function abrir(){$("av").textContent=ok?"":"Falta colar as chaves do Firebase em firebase-config.js.";dlg.showModal()}
+document.querySelectorAll("[data-abrir]").forEach(b=>b.addEventListener("click",e=>{e.preventDefault();user?null:abrir()}));
+$("btnConta").onclick=()=>user?signOut(auth):abrir();
+$("fx").onclick=()=>dlg.close();
+function aba(m){modo=m;$("tE").classList.toggle("on",m==="e");$("tC").classList.toggle("on",m==="c");$("lNome").hidden=m==="e";$("ok").textContent=m==="e"?"Entrar":"Criar conta";$("av").textContent=""}
+$("tE").onclick=()=>aba("e");$("tC").onclick=()=>aba("c");
+const erros={"auth/invalid-credential":"E-mail ou senha incorretos.","auth/email-already-in-use":"Esse e-mail já tem conta.","auth/weak-password":"A senha precisa ter pelo menos 6 caracteres.","auth/invalid-email":"E-mail inválido.","auth/operation-not-allowed":"Ative o login por e-mail e senha no Firebase."};
+const msg=e=>erros[e.code]||e.message||"Algo deu errado.";
+const chave=n=>n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+$("ok").onclick=async()=>{
+ if(!ok)return;const e=$("e").value.trim(),s=$("s").value,av=$("av");av.textContent="";
+ try{
+  if(modo==="e"){await signInWithEmailAndPassword(auth,e,s);dlg.close();return}
+  const nome=$("n").value.trim(),k=chave(nome);
+  if(nome.length<2||k.length<2){av.textContent="Escolha um nome com pelo menos 2 letras.";return}
+  const c=await createUserWithEmailAndPassword(auth,e,s),uid=c.user.uid,b=writeBatch(db);
+  b.set(doc(db,"nomes",k),{uid});
+  b.set(doc(db,"contas",uid),{uid,nome,nomeKey:k,saldo:0,criadoEm:serverTimestamp()});
+  try{await b.commit()}catch(x){await deleteUser(c.user);av.textContent="Esse nome de personagem já está em uso.";return}
+  dlg.close();
+ }catch(x){av.textContent=msg(x)}};
+$("esq").onclick=async()=>{const e=$("e").value.trim();if(!ok||!e){$("av").textContent="Digite o e-mail primeiro.";return}
+ try{await sendPasswordResetEmail(auth,e);$("av").textContent="Enviamos um e-mail para criar nova senha (veja o spam)."}catch(x){$("av").textContent=msg(x)}};
+/* painel */
+const un=()=>{subs.forEach(f=>f());subs=[]};
+if(ok)onAuthStateChanged(auth,u=>{
+ un();user=u;$("publico").hidden=!!u;$("app").hidden=!u;$("btnConta").textContent=u?"Sair":"Acessar minha conta";
+ if(!u)return;
+ const adm=u.uid===ADMIN_UID;$("admin").hidden=!adm;
+ subs.push(onSnapshot(doc(db,"contas",u.uid),s=>{const d=s.data();if(!d)return;$("nomeConta").textContent=d.nome;$("saldo").textContent=brl(d.saldo)}));
+ subs.push(onSnapshot(query(collection(db,"pedidos"),where("uid","==",u.uid)),s=>{
+  const l=ord(s.docs.map(d=>d.data()));
+  $("meusPed").innerHTML=l.length?l.map(p=>`<div class="item"><span>${brl(p.valor)}<small>${dt(p.criadoEm)}${p.motivo?" · "+esc(p.motivo):""}</small></span><span class="${p.status}">${p.status}</span></div>`).join(""):'<p class="vazio">Nenhum pedido ainda.</p>'}));
+ subs.push(onSnapshot(query(collection(db,"extrato"),where("uid","==",u.uid)),s=>{
+  const l=ord(s.docs.map(d=>d.data()));
+  $("extrato").innerHTML=l.length?l.map(x=>`<div class="item"><span>${esc(x.tipo)}<small>${dt(x.criadoEm)} · saldo ${brl(x.saldoApos)}</small></span><span class="${x.valor<0?"neg":"pos"}">${x.valor<0?"−":"+"}${brl(Math.abs(x.valor))}</span></div>`).join(""):'<p class="vazio">Nenhuma movimentação ainda.</p>'}));
+ if(!adm)return;
+ subs.push(onSnapshot(query(collection(db,"pedidos"),where("status","==","pendente")),s=>{
+  const l=ord(s.docs.map(d=>({id:d.id,...d.data()}))).reverse();
+  $("pend").innerHTML=l.length?l.map(p=>`<div class="item"><span>${esc(p.nome)} · ${brl(p.valor)}<small>${dt(p.criadoEm)}${p.motivo?" · "+esc(p.motivo):""}</small></span><span><button class="btn mini cheio" data-id="${p.id}" data-ok="1">Aprovar</button> <button class="btn mini" data-id="${p.id}">Recusar</button></span></div>`).join(""):'<p class="vazio">Nenhum pedido pendente.</p>'}));
+ subs.push(onSnapshot(collection(db,"contas"),s=>{const v=$("aj").value;
+  $("aj").innerHTML=s.docs.map(d=>d.data()).sort((a,b)=>a.nome.localeCompare(b.nome)).map(c=>`<option value="${c.uid}">${esc(c.nome)} (${brl(c.saldo)})</option>`).join("");if(v)$("aj").value=v}));
+});
+$("dep").onclick=async()=>{const v=+$("dv").value,a=$("avDep");a.textContent="";
+ if(!Number.isInteger(v)||v<1||v>1000000){a.textContent="Digite um valor inteiro entre 1 e 1.000.000.";return}
+ try{const c=await new Promise(r=>onSnapshot(doc(db,"contas",user.uid),s=>r(s.data()),()=>r(null)));
+  await addDoc(collection(db,"pedidos"),{uid:user.uid,nome:c.nome,valor:v,motivo:$("dm").value.trim(),status:"pendente",criadoEm:serverTimestamp()});
+  $("dv").value="";$("dm").value="";a.textContent="Pedido enviado. Aguarde a aprovação."}catch(x){a.textContent="Não foi possível enviar: "+msg(x)}};
+$("pend").onclick=async e=>{const b=e.target.closest("button[data-id]");if(!b)return;const id=b.dataset.id,aprova=!!b.dataset.ok;
+ try{await runTransaction(db,async tx=>{
+  const pr=doc(db,"pedidos",id),p=await tx.get(pr);
+  if(!p.exists()||p.data().status!=="pendente")throw new Error("Esse pedido já foi decidido.");
+  if(!aprova){tx.update(pr,{status:"recusado"});return}
+  const cr=doc(db,"contas",p.data().uid),c=await tx.get(cr),novo=c.data().saldo+p.data().valor;
+  tx.update(cr,{saldo:novo});tx.update(pr,{status:"aprovado"});
+  tx.set(doc(collection(db,"extrato")),{uid:p.data().uid,tipo:"Depósito aprovado",valor:p.data().valor,saldoApos:novo,criadoEm:serverTimestamp()})})}
+ catch(x){alert(msg(x))}};
+$("ajb").onclick=async()=>{const uid=$("aj").value,v=+$("ajv").value,a=$("avAj");a.textContent="";
+ if(!uid||!Number.isInteger(v)||v===0){a.textContent="Escolha a conta e um valor inteiro diferente de zero.";return}
+ try{await runTransaction(db,async tx=>{
+  const cr=doc(db,"contas",uid),c=await tx.get(cr),novo=c.data().saldo+v;
+  if(novo<0)throw new Error("O saldo ficaria negativo.");
+  tx.update(cr,{saldo:novo});
+  tx.set(doc(collection(db,"extrato")),{uid,tipo:$("am").value.trim()||"Ajuste do administrador",valor:v,saldoApos:novo,criadoEm:serverTimestamp()})});
+  $("ajv").value="";$("am").value="";a.textContent="Saldo ajustado."}catch(x){a.textContent=msg(x)}};
+</script>
+</body>
+</html>

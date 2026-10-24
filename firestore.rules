@@ -1,0 +1,72 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() { return request.auth != null; }
+    function owns(uid) { return signedIn() && request.auth.uid == uid; }
+    // Troque pelo UID da sua conta de administrador.
+    function isAdmin() { return signedIn() && request.auth.uid == 'COLE_O_UID_DO_ADMIN'; }
+
+    // Contas: cada pessoa lê a própria; o admin lê todas.
+    // Criação: só a própria conta, com saldo 0 e nome reservado. Saldo: só o admin altera.
+    match /contas/{uid} {
+      allow read: if owns(uid) || isAdmin();
+      allow create: if owns(uid)
+        && request.resource.data.keys().hasOnly(['uid', 'nome', 'nomeKey', 'saldo', 'criadoEm'])
+        && request.resource.data.uid == uid
+        && request.resource.data.saldo == 0
+        && request.resource.data.nome is string
+        && request.resource.data.nome.size() >= 2
+        && request.resource.data.nome.size() <= 40
+        && request.resource.data.nomeKey is string
+        && getAfter(/databases/$(database)/documents/nomes/$(request.resource.data.nomeKey)).data.uid == uid
+        && request.resource.data.criadoEm == request.time;
+      allow update: if isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['saldo'])
+        && request.resource.data.saldo is int
+        && request.resource.data.saldo >= 0;
+      allow delete: if false;
+    }
+
+    // Reserva do nome do personagem (impede dois iguais). Ninguém lê; só cria se ainda não existe.
+    match /nomes/{nomeKey} {
+      allow read: if false;
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && !exists(/databases/$(database)/documents/nomes/$(nomeKey));
+      allow update, delete: if false;
+    }
+
+    // Pedidos de depósito: o jogador cria como "pendente"; só o admin decide.
+    match /pedidos/{id} {
+      allow read: if owns(resource.data.uid) || isAdmin();
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['uid', 'nome', 'valor', 'motivo', 'status', 'criadoEm'])
+        && request.resource.data.uid == request.auth.uid
+        && exists(/databases/$(database)/documents/contas/$(request.auth.uid))
+        && request.resource.data.nome == get(/databases/$(database)/documents/contas/$(request.auth.uid)).data.nome
+        && request.resource.data.valor is int
+        && request.resource.data.valor >= 1
+        && request.resource.data.valor <= 1000000
+        && request.resource.data.motivo is string
+        && request.resource.data.motivo.size() <= 140
+        && request.resource.data.status == 'pendente'
+        && request.resource.data.criadoEm == request.time;
+      allow update: if isAdmin()
+        && resource.data.status == 'pendente'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && request.resource.data.status in ['aprovado', 'recusado'];
+      allow delete: if false;
+    }
+
+    // Extrato: cada pessoa lê o próprio; só o admin cria. Ninguém edita nem apaga.
+    match /extrato/{id} {
+      allow read: if owns(resource.data.uid) || isAdmin();
+      allow create: if isAdmin()
+        && request.resource.data.valor is int
+        && request.resource.data.saldoApos is int
+        && request.resource.data.criadoEm == request.time;
+      allow update, delete: if false;
+    }
+  }
+}
