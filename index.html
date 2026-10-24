@@ -63,6 +63,18 @@ dialog::backdrop{background:rgba(0,0,0,.75)}.abas{display:flex;gap:1.2rem;margin
 .abas button.on{color:var(--ouro-claro);border-color:var(--ouro)}
 .lk{background:none;border:0;color:var(--cinza);text-decoration:underline;cursor:pointer;font:inherit;font-size:.85rem;padding:0}
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+.topo-app{background:linear-gradient(180deg,#3d0912 0%,#1b050a 60%,var(--preto) 100%);padding:1.4rem 0 1.8rem;border-bottom:1px solid rgba(184,155,94,.25)}
+.app-col{width:min(560px,100% - 2rem);margin-inline:auto}
+.topo-app .saldo{margin:.2rem 0 0}.olho{background:none;border:1px solid rgba(184,155,94,.45);border-radius:50%;width:44px;height:44px;cursor:pointer;display:grid;place-items:center}
+.olho svg,.rap svg{width:22px;height:22px;stroke:var(--ouro-claro);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.rapidas{display:flex;gap:.9rem;overflow-x:auto;padding:1.4rem 0 .8rem;scrollbar-width:none}.rapidas::-webkit-scrollbar,.carrossel::-webkit-scrollbar{display:none}
+.rap{flex:none;width:76px;text-align:center;background:none;border:0;color:var(--marfim);cursor:pointer;font:inherit;font-size:.8rem;line-height:1.25}
+.rap i{display:grid;place-items:center;width:58px;height:58px;margin:0 auto .45rem;border-radius:50%;background:var(--grafite);border:1px solid rgba(184,155,94,.45)}
+.rap small{display:block;color:var(--cinza);font-size:.66rem}
+.carrossel{display:flex;gap:1rem;overflow-x:auto;scroll-snap-type:x mandatory;padding:.6rem 0 1.4rem;scrollbar-width:none}
+.ban{flex:none;width:80%;scroll-snap-align:start;padding:1.2rem;border:1px solid rgba(184,155,94,.35);background:linear-gradient(135deg,#240b11,var(--grafite));cursor:pointer}
+.ban h3{font-size:1.4rem;margin:0 0 .4rem;color:var(--ouro-claro)}.ban p{margin:0;color:var(--cinza);font-size:.9rem}.breve{display:block;margin-top:.8rem;color:var(--ouro);font-size:.72rem}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(1.5rem + env(safe-area-inset-bottom,0px));background:var(--grafite);border:1px solid var(--ouro);color:var(--marfim);padding:.8rem 1.2rem;font-size:.9rem;z-index:20;max-width:calc(100% - 2rem);text-align:center}
 </style>
 </head>
 <body>
@@ -97,28 +109,50 @@ dialog::backdrop{background:rgba(0,0,0,.75)}.abas{display:flex;gap:1.2rem;margin
 <p>Projeto fictício de RPG. Nenhum valor aqui é dinheiro real.</p></div></footer>
 </div>
 
-<main id="app" hidden><div class="wrap" style="padding:2.5rem 0 4rem">
-<p style="margin:0;color:var(--cinza)">Personagem ativo: <span id="nomeConta"></span></p>
-<p class="saldo" id="saldo">—</p><p style="margin:.3rem 0 0;color:var(--cinza)">Saldo disponível</p>
-<div class="painel" style="margin-top:2rem"><h3>Meus personagens</h3><div id="lista"></div>
+<main id="app" hidden>
+<div class="topo-app"><div class="app-col">
+<div style="display:flex;justify-content:space-between;align-items:center"><span>Olá, <b id="nomeConta"></b></span><button class="lk" id="sair">Sair</button></div>
+<div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:1.4rem">
+<div><small style="color:var(--cinza)">Saldo</small><p class="saldo" id="saldo">—</p></div>
+<button class="olho" id="olho" aria-label="Mostrar ou ocultar saldo"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+<a class="lk" href="#extratoSec" style="display:inline-block;margin-top:.8rem">Ver extrato</a>
+</div></div>
+<div class="app-col">
+<div class="rapidas" id="rapidas">
+<button class="rap" data-r="dep"><i><svg viewBox="0 0 24 24"><path d="M12 4v10m0 0-4-4m4 4 4-4M5 19h14"/></svg></i>Depositar</button>
+<button class="rap" data-n="Transferir"><i><svg viewBox="0 0 24 24"><path d="M5 8h14m0 0-4-4m4 4-4 4M19 16H5m0 0 4-4m-4 4 4 4"/></svg></i>Transferir<small>em breve</small></button>
+<button class="rap" data-n="Pagar"><i><svg viewBox="0 0 24 24"><path d="M5 6v12M9 6v12M13 6v12M17 6v12M20 6v12"/></svg></i>Pagar<small>em breve</small></button>
+<button class="rap" data-n="Crédito"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10c0-1 1-1.5 2.5-1.5s2.5.5 2.5 1.5-1 1.3-2.5 1.5-2.5.6-2.5 1.6 1 1.5 2.5 1.5 2.5-.5 2.5-1.5"/></svg></i>Crédito<small>em breve</small></button>
+<button class="rap" data-n="Investimentos"><i><svg viewBox="0 0 24 24"><path d="M4 18l5-6 4 3 7-9M15 6h5v5"/></svg></i>Investir<small>em breve</small></button>
+<button class="rap" data-n="Cartões"><i><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></i>Cartões<small>em breve</small></button>
+<button class="rap" data-n="Poupança"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5"/></svg></i>Poupança<small>em breve</small></button>
+</div>
+<div class="carrossel" id="banners">
+<div class="ban" data-n="Crédito pré-aprovado"><h3>Crédito pré-aprovado</h3><p>Até R$ 20.000 em minutos. Você começa a pagar quando entrar no mercado de trabalho.</p><small class="breve">em breve</small></div>
+<div class="ban" data-n="C’thon Capital"><h3>Investimentos C’thon Capital</h3><p>Rendimento todo mês, com a segurança do maior grupo da cidade.</p><small class="breve">em breve</small></div>
+<div class="ban" data-n="Financiamento de imóveis"><h3>Financiamento de imóveis</h3><p>O lar que você sonha, com entrada facilitada. Garantias aceitas sob análise.</p><small class="breve">em breve</small></div>
+<div class="ban" data-n="Seguro de vida"><h3>Seguro de vida C’thon</h3><p>Proteção para você e sua família. Sua tranquilidade é o nosso maior compromisso.</p><small class="breve">em breve</small></div>
+</div>
+<div class="painel" style="margin-bottom:1.2rem"><h3>Meus personagens</h3><div id="lista"></div>
 <label class="t" style="margin-top:1rem">Novo personagem (<span id="cont">0</span> de 10)<input id="np" maxlength="40" autocomplete="off"></label>
 <button class="btn" id="npb">Criar personagem</button><p class="aviso" id="avNp"></p></div>
-<div class="grade">
-<div class="painel"><h3>Pedir depósito</h3>
+<div class="painel" id="pDep" style="margin-bottom:1.2rem"><h3>Pedir depósito</h3>
 <label class="t">Valor<input id="dv" type="number" min="1" max="1000000" step="1" inputmode="numeric"></label>
 <label class="t">Motivo (opcional)<input id="dm" maxlength="140"></label>
 <button class="btn cheio" id="dep">Enviar pedido</button><p class="aviso" id="avDep"></p>
 <p class="vazio">O valor só entra no saldo depois que o administrador aprovar.</p>
 <h3 style="margin-top:1.6rem">Meus pedidos</h3><div id="meusPed"></div></div>
-<div class="painel"><h3>Extrato</h3><div id="extrato"></div></div></div>
-<div id="admin" hidden><h2 style="margin-top:3rem">Administração</h2><div class="grade">
+<div class="painel" id="extratoSec" style="margin-bottom:2rem"><h3>Extrato</h3><div id="extrato"></div></div>
+</div>
+<div class="wrap" id="admin" hidden style="padding-bottom:4rem"><h2>Administração</h2><div class="grade">
 <div class="painel"><h3>Depósitos pendentes</h3><div id="pend"></div></div>
 <div class="painel"><h3>Ajustar saldo</h3>
-<label class="t">Conta<select id="aj"></select></label>
+<label class="t">Personagem<select id="aj"></select></label>
 <label class="t">Valor (negativo para retirar)<input id="ajv" type="number" step="1" inputmode="numeric"></label>
 <label class="t">Descrição<input id="am" maxlength="80"></label>
 <button class="btn cheio" id="ajb">Aplicar</button><p class="aviso" id="avAj"></p></div></div></div>
-</div></main>
+</main>
+<div class="toast" id="toast" hidden></div>
 
 <dialog id="dlg">
 <div class="abas"><button id="tE" class="on">Entrar</button><button id="tC">Criar conta</button></div>
@@ -162,11 +196,11 @@ $("esq").onclick=async()=>{const e=$("e").value.trim();if(!ok||!e){$("av").textC
  try{await sendPasswordResetEmail(auth,e);$("av").textContent="Enviamos um e-mail para criar nova senha (veja o spam)."}catch(x){$("av").textContent=msg(x)}};
 /* painel */
 const un=()=>{subs.forEach(f=>f());subs=[]};
-let pers=[],ativo=null,peds=[],ext=[];
+let pers=[],ativo=null,peds=[],ext=[],oculto=false;
 const cur=()=>pers.find(p=>p.id===ativo);
 function desenha(){
  const c=cur();
- $("saldo").textContent=c?brl(c.saldo):"—";
+ $("saldo").textContent=c?(oculto?"R$ •••••":brl(c.saldo)):"—";
  $("nomeConta").textContent=c?c.nome:"crie um personagem abaixo";
  $("cont").textContent=pers.length;
  $("lista").innerHTML=pers.map(p=>`<div class="item"><span>${esc(p.nome)}<small>${brl(p.saldo)}</small></span>${p.id===ativo?'<span class="pos">ativo</span>':`<button class="btn mini" data-use="${p.id}">Usar</button>`}</div>`).join("")||'<p class="vazio">Você ainda não tem personagem.</p>';
@@ -223,6 +257,12 @@ $("ajb").onclick=async()=>{const id=$("aj").value,v=+$("ajv").value,a=$("avAj");
   tx.update(cr,{saldo:novo});
   tx.set(doc(collection(db,"extrato")),{ownerUid:c.data().ownerUid,charId:id,tipo:$("am").value.trim()||"Ajuste do administrador",valor:v,saldoApos:novo,criadoEm:serverTimestamp()})});
   $("ajv").value="";$("am").value="";a.textContent="Saldo ajustado."}catch(x){a.textContent=msg(x)}};
+const toast=t=>{const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2800)};
+$("rapidas").onclick=e=>{const b=e.target.closest("button.rap");if(!b)return;
+ if(b.dataset.r==="dep")$("pDep").scrollIntoView({behavior:"smooth"});else toast(b.dataset.n+" chega nas próximas fases do banco.")};
+$("banners").onclick=e=>{const b=e.target.closest(".ban");if(b)toast(b.dataset.n+" chega nas próximas fases do banco.")};
+$("olho").onclick=()=>{oculto=!oculto;desenha()};
+$("sair").onclick=()=>signOut(auth);
 </script>
 </body>
 </html>
