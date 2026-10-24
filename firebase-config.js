@@ -1,12 +1,12 @@
-// Cole aqui as chaves do SEU projeto novo do Firebase (só do banco).
-// Firebase > Configurações do projeto > Seus apps > Web.
+// Chaves do projeto Firebase do C’thonia Bank (só do banco).
 export const firebaseConfig = {
-  apiKey: "COLE_SUA_API_KEY",
-  authDomain: "COLE_SEU_PROJETO.firebaseapp.com",
-  projectId: "COLE_SEU_PROJETO",
-  storageBucket: "COLE_SEU_PROJETO.appspot.com",
-  messagingSenderId: "COLE_O_NUMERO",
-  appId: "COLE_O_APP_ID"
+  apiKey: "AIzaSyCn3c5cphdlfGUewqnK6BtSmpRbzZfTB1c",
+  authDomain: "c-thonia-bank.firebaseapp.com",
+  projectId: "c-thonia-bank",
+  storageBucket: "c-thonia-bank.firebasestorage.app",
+  messagingSenderId: "909906392445",
+  appId: "1:909906392445:web:3bc362e0602098d1ee0814",
+  measurementId: "G-PME7B4ZPVT"
 };
 
 // UID da conta do administrador (Authentication > Usuários > coluna "UID do usuário").
