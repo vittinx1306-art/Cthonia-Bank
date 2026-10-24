@@ -98,8 +98,11 @@ dialog::backdrop{background:rgba(0,0,0,.75)}.abas{display:flex;gap:1.2rem;margin
 </div>
 
 <main id="app" hidden><div class="wrap" style="padding:2.5rem 0 4rem">
-<p style="margin:0;color:var(--cinza)">Olá, <span id="nomeConta"></span></p>
+<p style="margin:0;color:var(--cinza)">Personagem ativo: <span id="nomeConta"></span></p>
 <p class="saldo" id="saldo">—</p><p style="margin:.3rem 0 0;color:var(--cinza)">Saldo disponível</p>
+<div class="painel" style="margin-top:2rem"><h3>Meus personagens</h3><div id="lista"></div>
+<label class="t" style="margin-top:1rem">Novo personagem (<span id="cont">0</span> de 10)<input id="np" maxlength="40" autocomplete="off"></label>
+<button class="btn" id="npb">Criar personagem</button><p class="aviso" id="avNp"></p></div>
 <div class="grade">
 <div class="painel"><h3>Pedir depósito</h3>
 <label class="t">Valor<input id="dv" type="number" min="1" max="1000000" step="1" inputmode="numeric"></label>
@@ -119,7 +122,6 @@ dialog::backdrop{background:rgba(0,0,0,.75)}.abas{display:flex;gap:1.2rem;margin
 
 <dialog id="dlg">
 <div class="abas"><button id="tE" class="on">Entrar</button><button id="tC">Criar conta</button></div>
-<label class="t" id="lNome" hidden>Nome do personagem<input id="n" maxlength="40" autocomplete="off"></label>
 <label class="t">E-mail<input id="e" type="email" autocomplete="email"></label>
 <label class="t">Senha (mínimo 6)<input id="s" type="password" autocomplete="current-password"></label>
 <p class="aviso" id="av"></p>
@@ -147,66 +149,79 @@ function abrir(){$("av").textContent=ok?"":"Falta colar as chaves do Firebase em
 document.querySelectorAll("[data-abrir]").forEach(b=>b.addEventListener("click",e=>{e.preventDefault();user?null:abrir()}));
 $("btnConta").onclick=()=>user?signOut(auth):abrir();
 $("fx").onclick=()=>dlg.close();
-function aba(m){modo=m;$("tE").classList.toggle("on",m==="e");$("tC").classList.toggle("on",m==="c");$("lNome").hidden=m==="e";$("ok").textContent=m==="e"?"Entrar":"Criar conta";$("av").textContent=""}
+function aba(m){modo=m;$("tE").classList.toggle("on",m==="e");$("tC").classList.toggle("on",m==="c");$("ok").textContent=m==="e"?"Entrar":"Criar conta";$("av").textContent=""}
 $("tE").onclick=()=>aba("e");$("tC").onclick=()=>aba("c");
 const erros={"auth/invalid-credential":"E-mail ou senha incorretos.","auth/email-already-in-use":"Esse e-mail já tem conta.","auth/weak-password":"A senha precisa ter pelo menos 6 caracteres.","auth/invalid-email":"E-mail inválido.","auth/operation-not-allowed":"Ative o login por e-mail e senha no Firebase."};
 const msg=e=>erros[e.code]||e.message||"Algo deu errado.";
 const chave=n=>n.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
 $("ok").onclick=async()=>{
- if(!ok)return;const e=$("e").value.trim(),s=$("s").value,av=$("av");av.textContent="";
- try{
-  if(modo==="e"){await signInWithEmailAndPassword(auth,e,s);dlg.close();return}
-  const nome=$("n").value.trim(),k=chave(nome);
-  if(nome.length<2||k.length<2){av.textContent="Escolha um nome com pelo menos 2 letras.";return}
-  const c=await createUserWithEmailAndPassword(auth,e,s),uid=c.user.uid,b=writeBatch(db);
-  b.set(doc(db,"nomes",k),{uid});
-  b.set(doc(db,"contas",uid),{uid,nome,nomeKey:k,saldo:0,criadoEm:serverTimestamp()});
-  try{await b.commit()}catch(x){await deleteUser(c.user);av.textContent="Esse nome de personagem já está em uso.";return}
-  dlg.close();
- }catch(x){av.textContent=msg(x)}};
+ if(!ok)return;const e=$("e").value.trim(),s=$("s").value;$("av").textContent="";
+ try{if(modo==="e")await signInWithEmailAndPassword(auth,e,s);else await createUserWithEmailAndPassword(auth,e,s);dlg.close()}
+ catch(x){$("av").textContent=msg(x)}};
 $("esq").onclick=async()=>{const e=$("e").value.trim();if(!ok||!e){$("av").textContent="Digite o e-mail primeiro.";return}
  try{await sendPasswordResetEmail(auth,e);$("av").textContent="Enviamos um e-mail para criar nova senha (veja o spam)."}catch(x){$("av").textContent=msg(x)}};
 /* painel */
 const un=()=>{subs.forEach(f=>f());subs=[]};
+let pers=[],ativo=null,peds=[],ext=[];
+const cur=()=>pers.find(p=>p.id===ativo);
+function desenha(){
+ const c=cur();
+ $("saldo").textContent=c?brl(c.saldo):"—";
+ $("nomeConta").textContent=c?c.nome:"crie um personagem abaixo";
+ $("cont").textContent=pers.length;
+ $("lista").innerHTML=pers.map(p=>`<div class="item"><span>${esc(p.nome)}<small>${brl(p.saldo)}</small></span>${p.id===ativo?'<span class="pos">ativo</span>':`<button class="btn mini" data-use="${p.id}">Usar</button>`}</div>`).join("")||'<p class="vazio">Você ainda não tem personagem.</p>';
+ const mp=peds.filter(p=>p.charId===ativo);
+ $("meusPed").innerHTML=mp.length?mp.map(p=>`<div class="item"><span>${brl(p.valor)}<small>${dt(p.criadoEm)}${p.motivo?" · "+esc(p.motivo):""}</small></span><span class="${p.status}">${p.status}</span></div>`).join(""):'<p class="vazio">Nenhum pedido ainda.</p>';
+ const mx=ext.filter(x=>x.charId===ativo);
+ $("extrato").innerHTML=mx.length?mx.map(x=>`<div class="item"><span>${esc(x.tipo)}<small>${dt(x.criadoEm)} · saldo ${brl(x.saldoApos)}</small></span><span class="${x.valor<0?"neg":"pos"}">${x.valor<0?"−":"+"}${brl(Math.abs(x.valor))}</span></div>`).join(""):'<p class="vazio">Nenhuma movimentação ainda.</p>';
+}
 if(ok)onAuthStateChanged(auth,u=>{
- un();user=u;$("publico").hidden=!!u;$("app").hidden=!u;$("btnConta").textContent=u?"Sair":"Acessar minha conta";
+ un();user=u;pers=[];peds=[];ext=[];ativo=null;
+ $("publico").hidden=!!u;$("app").hidden=!u;$("btnConta").textContent=u?"Sair":"Acessar minha conta";
  if(!u)return;
  const adm=u.uid===ADMIN_UID;$("admin").hidden=!adm;
- subs.push(onSnapshot(doc(db,"contas",u.uid),s=>{const d=s.data();if(!d)return;$("nomeConta").textContent=d.nome;$("saldo").textContent=brl(d.saldo)}));
- subs.push(onSnapshot(query(collection(db,"pedidos"),where("uid","==",u.uid)),s=>{
-  const l=ord(s.docs.map(d=>d.data()));
-  $("meusPed").innerHTML=l.length?l.map(p=>`<div class="item"><span>${brl(p.valor)}<small>${dt(p.criadoEm)}${p.motivo?" · "+esc(p.motivo):""}</small></span><span class="${p.status}">${p.status}</span></div>`).join(""):'<p class="vazio">Nenhum pedido ainda.</p>'}));
- subs.push(onSnapshot(query(collection(db,"extrato"),where("uid","==",u.uid)),s=>{
-  const l=ord(s.docs.map(d=>d.data()));
-  $("extrato").innerHTML=l.length?l.map(x=>`<div class="item"><span>${esc(x.tipo)}<small>${dt(x.criadoEm)} · saldo ${brl(x.saldoApos)}</small></span><span class="${x.valor<0?"neg":"pos"}">${x.valor<0?"−":"+"}${brl(Math.abs(x.valor))}</span></div>`).join(""):'<p class="vazio">Nenhuma movimentação ainda.</p>'}));
+ subs.push(onSnapshot(query(collection(db,"personagens"),where("ownerUid","==",u.uid)),s=>{
+  pers=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.slot-b.slot);
+  if(!pers.some(p=>p.id===ativo))ativo=pers[0]?pers[0].id:null;desenha()}));
+ subs.push(onSnapshot(query(collection(db,"pedidos"),where("ownerUid","==",u.uid)),s=>{peds=ord(s.docs.map(d=>d.data()));desenha()}));
+ subs.push(onSnapshot(query(collection(db,"extrato"),where("ownerUid","==",u.uid)),s=>{ext=ord(s.docs.map(d=>d.data()));desenha()}));
  if(!adm)return;
  subs.push(onSnapshot(query(collection(db,"pedidos"),where("status","==","pendente")),s=>{
   const l=ord(s.docs.map(d=>({id:d.id,...d.data()}))).reverse();
   $("pend").innerHTML=l.length?l.map(p=>`<div class="item"><span>${esc(p.nome)} · ${brl(p.valor)}<small>${dt(p.criadoEm)}${p.motivo?" · "+esc(p.motivo):""}</small></span><span><button class="btn mini cheio" data-id="${p.id}" data-ok="1">Aprovar</button> <button class="btn mini" data-id="${p.id}">Recusar</button></span></div>`).join(""):'<p class="vazio">Nenhum pedido pendente.</p>'}));
- subs.push(onSnapshot(collection(db,"contas"),s=>{const v=$("aj").value;
-  $("aj").innerHTML=s.docs.map(d=>d.data()).sort((a,b)=>a.nome.localeCompare(b.nome)).map(c=>`<option value="${c.uid}">${esc(c.nome)} (${brl(c.saldo)})</option>`).join("");if(v)$("aj").value=v}));
+ subs.push(onSnapshot(collection(db,"personagens"),s=>{const v=$("aj").value;
+  $("aj").innerHTML=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.nome.localeCompare(b.nome)).map(c=>`<option value="${c.id}">${esc(c.nome)} (${brl(c.saldo)})</option>`).join("");if(v)$("aj").value=v}));
 });
-$("dep").onclick=async()=>{const v=+$("dv").value,a=$("avDep");a.textContent="";
+$("lista").onclick=e=>{const b=e.target.closest("button[data-use]");if(b){ativo=b.dataset.use;desenha()}};
+$("npb").onclick=async()=>{const nome=$("np").value.trim(),k=chave(nome),a=$("avNp");a.textContent="";
+ if(nome.length<2||k.length<2){a.textContent="Escolha um nome com pelo menos 2 letras.";return}
+ const usados=pers.map(p=>p.slot),slot=[0,1,2,3,4,5,6,7,8,9].find(i=>!usados.includes(i));
+ if(slot===undefined){a.textContent="Limite de 10 personagens por conta.";return}
+ const id=user.uid+"_"+slot,b=writeBatch(db);
+ b.set(doc(db,"nomes",k),{uid:user.uid});
+ b.set(doc(db,"personagens",id),{ownerUid:user.uid,slot,nome,nomeKey:k,saldo:0,criadoEm:serverTimestamp()});
+ try{await b.commit();$("np").value="";ativo=id;desenha()}catch(x){a.textContent="Esse nome já está em uso ou não pôde ser criado."}};
+$("dep").onclick=async()=>{const v=+$("dv").value,a=$("avDep"),c=cur();a.textContent="";
+ if(!c){a.textContent="Crie um personagem primeiro.";return}
  if(!Number.isInteger(v)||v<1||v>1000000){a.textContent="Digite um valor inteiro entre 1 e 1.000.000.";return}
- try{const c=await new Promise(r=>onSnapshot(doc(db,"contas",user.uid),s=>r(s.data()),()=>r(null)));
-  await addDoc(collection(db,"pedidos"),{uid:user.uid,nome:c.nome,valor:v,motivo:$("dm").value.trim(),status:"pendente",criadoEm:serverTimestamp()});
-  $("dv").value="";$("dm").value="";a.textContent="Pedido enviado. Aguarde a aprovação."}catch(x){a.textContent="Não foi possível enviar: "+msg(x)}};
+ try{await addDoc(collection(db,"pedidos"),{ownerUid:user.uid,charId:c.id,nome:c.nome,valor:v,motivo:$("dm").value.trim(),status:"pendente",criadoEm:serverTimestamp()});
+  $("dv").value="";$("dm").value="";a.textContent="Pedido enviado para "+c.nome+". Aguarde a aprovação."}catch(x){a.textContent="Não foi possível enviar: "+msg(x)}};
 $("pend").onclick=async e=>{const b=e.target.closest("button[data-id]");if(!b)return;const id=b.dataset.id,aprova=!!b.dataset.ok;
  try{await runTransaction(db,async tx=>{
   const pr=doc(db,"pedidos",id),p=await tx.get(pr);
   if(!p.exists()||p.data().status!=="pendente")throw new Error("Esse pedido já foi decidido.");
   if(!aprova){tx.update(pr,{status:"recusado"});return}
-  const cr=doc(db,"contas",p.data().uid),c=await tx.get(cr),novo=c.data().saldo+p.data().valor;
+  const d=p.data(),cr=doc(db,"personagens",d.charId),c=await tx.get(cr),novo=c.data().saldo+d.valor;
   tx.update(cr,{saldo:novo});tx.update(pr,{status:"aprovado"});
-  tx.set(doc(collection(db,"extrato")),{uid:p.data().uid,tipo:"Depósito aprovado",valor:p.data().valor,saldoApos:novo,criadoEm:serverTimestamp()})})}
+  tx.set(doc(collection(db,"extrato")),{ownerUid:d.ownerUid,charId:d.charId,tipo:"Depósito aprovado",valor:d.valor,saldoApos:novo,criadoEm:serverTimestamp()})})}
  catch(x){alert(msg(x))}};
-$("ajb").onclick=async()=>{const uid=$("aj").value,v=+$("ajv").value,a=$("avAj");a.textContent="";
- if(!uid||!Number.isInteger(v)||v===0){a.textContent="Escolha a conta e um valor inteiro diferente de zero.";return}
+$("ajb").onclick=async()=>{const id=$("aj").value,v=+$("ajv").value,a=$("avAj");a.textContent="";
+ if(!id||!Number.isInteger(v)||v===0){a.textContent="Escolha o personagem e um valor inteiro diferente de zero.";return}
  try{await runTransaction(db,async tx=>{
-  const cr=doc(db,"contas",uid),c=await tx.get(cr),novo=c.data().saldo+v;
+  const cr=doc(db,"personagens",id),c=await tx.get(cr),novo=c.data().saldo+v;
   if(novo<0)throw new Error("O saldo ficaria negativo.");
   tx.update(cr,{saldo:novo});
-  tx.set(doc(collection(db,"extrato")),{uid,tipo:$("am").value.trim()||"Ajuste do administrador",valor:v,saldoApos:novo,criadoEm:serverTimestamp()})});
+  tx.set(doc(collection(db,"extrato")),{ownerUid:c.data().ownerUid,charId:id,tipo:$("am").value.trim()||"Ajuste do administrador",valor:v,saldoApos:novo,criadoEm:serverTimestamp()})});
   $("ajv").value="";$("am").value="";a.textContent="Saldo ajustado."}catch(x){a.textContent=msg(x)}};
 </script>
 </body>
