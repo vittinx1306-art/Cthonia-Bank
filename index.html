@@ -105,7 +105,7 @@ html{font-feature-settings:"lnum"}.saldo,.parcela{font-family:var(--sans);font-w
 <div style="border-top:1px solid rgba(237,229,211,.15);padding-top:1.2rem"><div class="parcela"><span id="rp"></span> <small>por mês</small></div><p id="rt" style="margin:.6rem 0 0;color:var(--cinza)"></p></div></div></div></section>
 </main>
 <footer><div class="wrap"><p>© C’thonia Bank S.A. Um banco do grupo C’thon. Todos os direitos reservados.</p>
-<p>Crédito sujeito a análise. Taxa de 3,9% ao mês. Garantias aceitas: imóveis, veículos, tempo e <span class="sangue">esperança</span>.</p>
+<p>Crédito sujeito a análise. Taxas a partir de 3,9% ao mês. Garantias aceitas: imóveis, veículos, tempo e <span class="sangue">esperança</span>.</p>
 <p>Projeto fictício de RPG. Nenhum valor aqui é dinheiro real.</p></div></footer>
 </div>
 
@@ -122,13 +122,13 @@ html{font-feature-settings:"lnum"}.saldo,.parcela{font-family:var(--sans);font-w
 <button class="rap" data-r="dep"><i><svg viewBox="0 0 24 24"><path d="M12 4v10m0 0-4-4m4 4 4-4M5 19h14"/></svg></i>Depositar</button>
 <button class="rap" data-r="tr"><i><svg viewBox="0 0 24 24"><path d="M5 8h14m0 0-4-4m4 4-4 4M19 16H5m0 0 4-4m-4 4 4 4"/></svg></i>Transferir</button>
 <button class="rap" data-n="Pagar"><i><svg viewBox="0 0 24 24"><path d="M5 6v12M9 6v12M13 6v12M17 6v12M20 6v12"/></svg></i>Pagar<small>em breve</small></button>
-<button class="rap" data-n="Crédito"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10c0-1 1-1.5 2.5-1.5s2.5.5 2.5 1.5-1 1.3-2.5 1.5-2.5.6-2.5 1.6 1 1.5 2.5 1.5 2.5-.5 2.5-1.5"/></svg></i>Crédito<small>em breve</small></button>
+<button class="rap" data-r="cr"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10c0-1 1-1.5 2.5-1.5s2.5.5 2.5 1.5-1 1.3-2.5 1.5-2.5.6-2.5 1.6 1 1.5 2.5 1.5 2.5-.5 2.5-1.5"/></svg></i>Crédito</button>
 <button class="rap" data-n="Investimentos"><i><svg viewBox="0 0 24 24"><path d="M4 18l5-6 4 3 7-9M15 6h5v5"/></svg></i>Investir<small>em breve</small></button>
 <button class="rap" data-n="Cartões"><i><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg></i>Cartões<small>em breve</small></button>
 <button class="rap" data-n="Poupança"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5"/></svg></i>Poupança<small>em breve</small></button>
 </div>
 <div class="carrossel" id="banners">
-<div class="ban" data-n="Crédito pré-aprovado"><h3>Crédito pré-aprovado</h3><p>Até R$ 20.000 em minutos. Você começa a pagar quando entrar no mercado de trabalho.</p><small class="breve">em breve</small></div>
+<div class="ban" data-n="Crédito pré-aprovado"><h3>Crédito pré-aprovado</h3><p>Até R$ 20.000 em minutos. Você começa a pagar quando entrar no mercado de trabalho.</p><small class="breve">disponível agora</small></div>
 <div class="ban" data-n="C’thon Capital"><h3>Investimentos C’thon Capital</h3><p>Rendimento todo mês, com a segurança do maior grupo da cidade.</p><small class="breve">em breve</small></div>
 <div class="ban" data-n="Financiamento de imóveis"><h3>Financiamento de imóveis</h3><p>O lar que você sonha, com entrada facilitada. Garantias aceitas sob análise.</p><small class="breve">em breve</small></div>
 <div class="ban" data-n="Seguro de vida"><h3>Seguro de vida C’thon</h3><p>Proteção para você e sua família. Sua tranquilidade é o nosso maior compromisso.</p><small class="breve">em breve</small></div>
@@ -149,11 +149,21 @@ html{font-feature-settings:"lnum"}.saldo,.parcela{font-family:var(--sans);font-w
 <button class="btn cheio" id="trb">Enviar transferência</button><p class="aviso" id="avTr"></p>
 <p class="vazio">O dinheiro só sai e entra depois que o administrador aprovar.</p>
 <h3 style="margin-top:1.6rem">Minhas transferências</h3><div id="meusTr"></div></div>
+<div class="painel" id="pCr" style="margin-bottom:1.2rem"><h3>Crédito</h3>
+<div class="campo"><label for="cv">Valor <output id="cvo"></output></label><input id="cv" type="range" min="500" max="20000" step="500" value="5000"></div>
+<div class="campo"><label for="cp">Prazo <output id="cpo"></output></label><input id="cp" type="range" min="6" max="60" step="6" value="12"></div>
+<p class="parcela" style="font-size:2rem;margin:0"><span id="cpar"></span> <small>por mês</small></p>
+<p id="ctot" class="vazio" style="margin:.4rem 0 1rem"></p>
+<button class="btn cheio" id="cb">Pedir empréstimo</button><p class="aviso" id="avCr"></p>
+<p class="vazio">Taxa de 15% ao mês. Parcelas a cada 30 dias. Em caso de atraso: multa de 10% mais 1% ao dia. Sujeito à aprovação.</p>
+<h3 style="margin-top:1.6rem">Meus empréstimos</h3><div id="meusEmp"></div></div>
 <div class="painel" id="extratoSec" style="margin-bottom:2rem"><h3>Extrato</h3><div id="extrato"></div></div>
 </div>
 <div class="wrap" id="admin" hidden style="padding-bottom:4rem"><h2>Administração</h2><div class="grade">
 <div class="painel"><h3>Depósitos pendentes</h3><div id="pend"></div></div>
 <div class="painel"><h3>Transferências pendentes</h3><div id="pendT"></div></div>
+<div class="painel"><h3>Empréstimos pendentes</h3><div id="pendE"></div></div>
+<div class="painel"><h3>Empréstimos ativos</h3><div id="ativosE"></div></div>
 <div class="painel"><h3>Ajustar saldo</h3>
 <label class="t">Personagem<select id="aj"></select></label>
 <label class="t">Valor (negativo para retirar)<input id="ajv" type="number" step="1" inputmode="numeric"></label>
@@ -203,8 +213,13 @@ $("ok").onclick=async()=>{
 $("esq").onclick=async()=>{const e=$("e").value.trim();if(!ok||!e){$("av").textContent="Digite o e-mail primeiro.";return}
  try{await sendPasswordResetEmail(auth,e);$("av").textContent="Enviamos um e-mail para criar nova senha (veja o spam)."}catch(x){$("av").textContent=msg(x)}};
 /* painel */
+const TAXA=.15;
+const pmt=(v,n)=>v*TAXA/(1-Math.pow(1+TAXA,-n));
+const venc=(e,k)=>new Date((e.aprovadoEm?e.aprovadoEm.toMillis():Date.now())+30*86400000*k);
+const atrasoDias=e=>Math.max(0,Math.floor((Date.now()-venc(e,e.pagas+1).getTime())/86400000));
+const devido=e=>{const p=e.parcelaValor,d=atrasoDias(e);return Math.round(d>0?p*1.1+p*.01*d:p)};
 const un=()=>{subs.forEach(f=>f());subs=[]};
-let pers=[],ativo=null,peds=[],ext=[],trs=[],oculto=false;
+let pers=[],ativo=null,peds=[],ext=[],trs=[],emps=[],oculto=false;
 const cur=()=>pers.find(p=>p.id===ativo);
 function desenha(){
  const c=cur();
@@ -214,13 +229,17 @@ function desenha(){
  $("lista").innerHTML=pers.map(p=>`<div class="item"><span>${esc(p.nome)}<small>${brl(p.saldo)}</small></span>${p.id===ativo?'<span class="pos">ativo</span>':`<button class="btn mini" data-use="${p.id}">Usar</button>`}</div>`).join("")||'<p class="vazio">Você ainda não tem personagem.</p>';
  const mp=peds.filter(p=>p.charId===ativo);
  $("meusPed").innerHTML=mp.length?mp.map(p=>`<div class="item"><span>${brl(p.valor)}<small>${dt(p.criadoEm)}${p.motivo?" · "+esc(p.motivo):""}</small></span><span class="${p.status}">${p.status}</span></div>`).join(""):'<p class="vazio">Nenhum pedido ainda.</p>';
+ const me=emps.filter(e=>e.charId===ativo);
+ $("meusEmp").innerHTML=me.length?me.map(e=>{const a=e.status==="ativo",at=a?atrasoDias(e):0;
+  const info=a?`pagas ${e.pagas}/${e.parcelas} · próxima ${venc(e,e.pagas+1).toLocaleDateString("pt-BR")}${at>0?` · <b class="neg">atrasada ${at} dia(s), valor atual ${brl(devido(e))}</b>`:""}`:dt(e.criadoEm);
+  return `<div class="item"><span>${brl(e.valor)} em ${e.parcelas}x${a?" de "+brl(e.parcelaValor):""}<small>${info}</small></span><span class="${a?"pendente":e.status==="quitado"?"aprovado":e.status}">${e.status}</span></div>`}).join(""):'<p class="vazio">Nenhum empréstimo ainda.</p>';
  const mt=trs.filter(t=>t.deCharId===ativo);
  $("meusTr").innerHTML=mt.length?mt.map(t=>`<div class="item"><span>${brl(t.valor)} para ${esc(t.paraNome)}<small>${dt(t.criadoEm)}${t.motivo?" · "+esc(t.motivo):""}</small></span><span class="${t.status}">${t.status}</span></div>`).join(""):'<p class="vazio">Nenhuma transferência ainda.</p>';
  const mx=ext.filter(x=>x.charId===ativo);
  $("extrato").innerHTML=mx.length?mx.map(x=>`<div class="item"><span>${esc(x.tipo)}<small>${dt(x.criadoEm)} · saldo ${brl(x.saldoApos)}</small></span><span class="${x.valor<0?"neg":"pos"}">${x.valor<0?"−":"+"}${brl(Math.abs(x.valor))}</span></div>`).join(""):'<p class="vazio">Nenhuma movimentação ainda.</p>';
 }
 if(ok)onAuthStateChanged(auth,u=>{
- un();user=u;pers=[];peds=[];ext=[];trs=[];ativo=null;
+ un();user=u;pers=[];peds=[];ext=[];trs=[];emps=[];ativo=null;
  $("publico").hidden=!!u;$("app").hidden=!u;$("btnConta").textContent=u?"Sair":"Acessar minha conta";
  if(!u)return;
  const adm=u.uid===ADMIN_UID;$("admin").hidden=!adm;
@@ -230,6 +249,7 @@ if(ok)onAuthStateChanged(auth,u=>{
  subs.push(onSnapshot(query(collection(db,"pedidos"),where("ownerUid","==",u.uid)),s=>{peds=ord(s.docs.map(d=>d.data()));desenha()}));
  subs.push(onSnapshot(query(collection(db,"extrato"),where("ownerUid","==",u.uid)),s=>{ext=ord(s.docs.map(d=>d.data()));desenha()}));
  subs.push(onSnapshot(query(collection(db,"transferencias"),where("ownerUid","==",u.uid)),s=>{trs=ord(s.docs.map(d=>d.data()));desenha()}));
+ subs.push(onSnapshot(query(collection(db,"emprestimos"),where("ownerUid","==",u.uid)),s=>{emps=ord(s.docs.map(d=>d.data()));desenha()}));
  if(!adm)return;
  subs.push(onSnapshot(query(collection(db,"pedidos"),where("status","==","pendente")),s=>{
   const l=ord(s.docs.map(d=>({id:d.id,...d.data()}))).reverse();
@@ -237,6 +257,12 @@ if(ok)onAuthStateChanged(auth,u=>{
  subs.push(onSnapshot(query(collection(db,"transferencias"),where("status","==","pendente")),s=>{
   const l=ord(s.docs.map(d=>({id:d.id,...d.data()}))).reverse();
   $("pendT").innerHTML=l.length?l.map(t=>`<div class="item"><span>${esc(t.deNome)} → ${esc(t.paraNome)} · ${brl(t.valor)}<small>${dt(t.criadoEm)}${t.motivo?" · "+esc(t.motivo):""}</small></span><span><button class="btn mini cheio" data-id="${t.id}" data-ok="1">Aprovar</button> <button class="btn mini" data-id="${t.id}">Recusar</button></span></div>`).join(""):'<p class="vazio">Nenhuma transferência pendente.</p>'}));
+ subs.push(onSnapshot(query(collection(db,"emprestimos"),where("status","==","pendente")),s=>{
+  const l=ord(s.docs.map(d=>({id:d.id,...d.data()}))).reverse();
+  $("pendE").innerHTML=l.length?l.map(e=>`<div class="item"><span>${esc(e.nome)} · ${brl(e.valor)} em ${e.parcelas}x<small>${dt(e.criadoEm)} · parcela ${brl(Math.round(pmt(e.valor,e.parcelas)))}</small></span><span><button class="btn mini cheio" data-id="${e.id}" data-ok="1">Aprovar</button> <button class="btn mini" data-id="${e.id}">Recusar</button></span></div>`).join(""):'<p class="vazio">Nenhum empréstimo pendente.</p>'}));
+ subs.push(onSnapshot(query(collection(db,"emprestimos"),where("status","==","ativo")),s=>{
+  const l=s.docs.map(d=>({id:d.id,...d.data()}));
+  $("ativosE").innerHTML=l.length?l.map(e=>{const at=atrasoDias(e);return `<div class="item"><span>${esc(e.nome)} · pagas ${e.pagas}/${e.parcelas}<small>próxima ${venc(e,e.pagas+1).toLocaleDateString("pt-BR")}${at>0?` · <b class="neg">atrasada ${at} dia(s)</b>`:""} · cobrar ${brl(devido(e))}</small></span><button class="btn mini cheio" data-cob="${e.id}">Cobrar</button></div>`}).join(""):'<p class="vazio">Nenhum empréstimo ativo.</p>'}));
  subs.push(onSnapshot(collection(db,"personagens"),s=>{const v=$("aj").value;
   $("aj").innerHTML=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.nome.localeCompare(b.nome)).map(c=>`<option value="${c.id}">${esc(c.nome)} (${brl(c.saldo)})</option>`).join("");if(v)$("aj").value=v}));
 });
@@ -273,8 +299,8 @@ $("ajb").onclick=async()=>{const id=$("aj").value,v=+$("ajv").value,a=$("avAj");
   $("ajv").value="";$("am").value="";a.textContent="Saldo ajustado."}catch(x){a.textContent=msg(x)}};
 const toast=t=>{const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2800)};
 $("rapidas").onclick=e=>{const b=e.target.closest("button.rap");if(!b)return;
- if(b.dataset.r)$(b.dataset.r==="dep"?"pDep":"pTr").scrollIntoView({behavior:"smooth"});else toast(b.dataset.n+" chega nas próximas fases do banco.")};
-$("banners").onclick=e=>{const b=e.target.closest(".ban");if(b)toast(b.dataset.n+" chega nas próximas fases do banco.")};
+ if(b.dataset.r)$({dep:"pDep",tr:"pTr",cr:"pCr"}[b.dataset.r]).scrollIntoView({behavior:"smooth"});else toast(b.dataset.n+" chega nas próximas fases do banco.")};
+$("banners").onclick=e=>{const b=e.target.closest(".ban");if(!b)return;if(b.dataset.n==="Crédito pré-aprovado"){$("pCr").scrollIntoView({behavior:"smooth"});return}toast(b.dataset.n+" chega nas próximas fases do banco.")};
 $("olho").onclick=()=>{oculto=!oculto;desenha()};
 $("trb").onclick=async()=>{const a=$("avTr"),c=cur(),nome=$("tn").value.trim(),k=chave(nome),v=+$("tv").value;a.textContent="";
  if(!c){a.textContent="Crie um personagem primeiro.";return}
@@ -301,6 +327,32 @@ $("pendT").onclick=async e=>{const b=e.target.closest("button[data-id]");if(!b)r
    tx.update(r1,{saldo:s1});tx.update(r2,{saldo:s2});tx.update(tr,{status:"aprovado"});
    tx.set(doc(collection(db,"extrato")),{ownerUid:c1.data().ownerUid,charId:d.deCharId,tipo:"Transferência enviada a "+c2.data().nome,valor:-d.valor,saldoApos:s1,criadoEm:serverTimestamp()});
    tx.set(doc(collection(db,"extrato")),{ownerUid:c2.data().ownerUid,charId:rid,tipo:"Transferência recebida de "+c1.data().nome,valor:d.valor,saldoApos:s2,criadoEm:serverTimestamp()})})}
+ catch(x){alert(msg(x))}};
+function simC(){const v=+$("cv").value,n=+$("cp").value,p=Math.round(pmt(v,n));$("cvo").textContent=brl(v);$("cpo").textContent=n+" meses";$("cpar").textContent=brl(p);$("ctot").textContent="Total a pagar: "+brl(p*n)}
+$("cv").oninput=$("cp").oninput=simC;simC();
+$("cb").onclick=async()=>{const a=$("avCr"),c=cur(),v=+$("cv").value,n=+$("cp").value;a.textContent="";
+ if(!c){a.textContent="Crie um personagem primeiro.";return}
+ try{await addDoc(collection(db,"emprestimos"),{ownerUid:user.uid,charId:c.id,nome:c.nome,valor:v,parcelas:n,status:"pendente",criadoEm:serverTimestamp()});
+  a.textContent="Pedido enviado para "+c.nome+". Aguarde a análise."}catch(x){a.textContent="Não foi possível enviar: "+msg(x)}};
+$("pendE").onclick=async e=>{const b=e.target.closest("button[data-id]");if(!b)return;const id=b.dataset.id,aprova=!!b.dataset.ok;
+ try{await runTransaction(db,async tx=>{
+  const er=doc(db,"emprestimos",id),s=await tx.get(er);
+  if(!s.exists()||s.data().status!=="pendente")throw new Error("Esse empréstimo já foi decidido.");
+  if(!aprova){tx.update(er,{status:"recusado"});return}
+  const d=s.data(),cr=doc(db,"personagens",d.charId),c=await tx.get(cr),p=Math.round(pmt(d.valor,d.parcelas)),novo=c.data().saldo+d.valor;
+  tx.update(er,{status:"ativo",taxa:Math.round(TAXA*100),parcelaValor:p,total:p*d.parcelas,pagas:0,aprovadoEm:serverTimestamp()});
+  tx.update(cr,{saldo:novo});
+  tx.set(doc(collection(db,"extrato")),{ownerUid:d.ownerUid,charId:d.charId,tipo:"Empréstimo aprovado ("+d.parcelas+"x)",valor:d.valor,saldoApos:novo,criadoEm:serverTimestamp()})})}
+ catch(x){alert(msg(x))}};
+$("ativosE").onclick=async e=>{const b=e.target.closest("button[data-cob]");if(!b)return;
+ try{await runTransaction(db,async tx=>{
+  const er=doc(db,"emprestimos",b.dataset.cob),s=await tx.get(er);
+  if(!s.exists()||s.data().status!=="ativo")throw new Error("Esse empréstimo não está ativo.");
+  const d=s.data(),cr=doc(db,"personagens",d.charId),c=await tx.get(cr),v=devido(d);
+  if(c.data().saldo<v)throw new Error("Saldo insuficiente ("+brl(c.data().saldo)+"). A parcela de "+brl(v)+" continua em atraso.");
+  const novo=c.data().saldo-v,pg=d.pagas+1;
+  tx.update(cr,{saldo:novo});tx.update(er,{pagas:pg,status:pg>=d.parcelas?"quitado":"ativo"});
+  tx.set(doc(collection(db,"extrato")),{ownerUid:d.ownerUid,charId:d.charId,tipo:"Parcela "+pg+"/"+d.parcelas+" do empréstimo",valor:-v,saldoApos:novo,criadoEm:serverTimestamp()})})}
  catch(x){alert(msg(x))}};
 </script>
 </body>
