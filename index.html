@@ -75,7 +75,7 @@ dialog::backdrop{background:rgba(0,0,0,.75)}.abas{display:flex;gap:1.2rem;margin
 .ban{flex:none;width:80%;scroll-snap-align:start;padding:1.2rem;border:1px solid rgba(184,155,94,.35);background:linear-gradient(135deg,#240b11,var(--grafite));cursor:pointer}
 .ban h3{font-size:1.4rem;margin:0 0 .4rem;color:var(--ouro-claro)}.ban p{margin:0;color:var(--cinza);font-size:.9rem}.breve{display:block;margin-top:.8rem;color:var(--ouro);font-size:.72rem}
 .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(1.5rem + env(safe-area-inset-bottom,0px));background:var(--grafite);border:1px solid var(--ouro);color:var(--marfim);padding:.8rem 1.2rem;font-size:.9rem;z-index:20;max-width:calc(100% - 2rem);text-align:center}
-</style>
+html{font-feature-settings:"lnum"}.saldo,.parcela{font-family:var(--sans);font-weight:500;letter-spacing:-.02em}</style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="emb" viewBox="0 0 100 100">
@@ -111,7 +111,7 @@ dialog::backdrop{background:rgba(0,0,0,.75)}.abas{display:flex;gap:1.2rem;margin
 
 <main id="app" hidden>
 <div class="topo-app"><div class="app-col">
-<div style="display:flex;justify-content:space-between;align-items:center"><span>Olá, <b id="nomeConta"></b></span><button class="lk" id="sair">Sair</button></div>
+<div style="display:flex;justify-content:space-between;align-items:center"><span>Olá, <b id="nomeConta"></b></span></div>
 <div style="display:flex;justify-content:space-between;align-items:flex-end;margin-top:1.4rem">
 <div><small style="color:var(--cinza)">Saldo</small><p class="saldo" id="saldo">—</p></div>
 <button class="olho" id="olho" aria-label="Mostrar ou ocultar saldo"><svg viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
@@ -120,7 +120,7 @@ dialog::backdrop{background:rgba(0,0,0,.75)}.abas{display:flex;gap:1.2rem;margin
 <div class="app-col">
 <div class="rapidas" id="rapidas">
 <button class="rap" data-r="dep"><i><svg viewBox="0 0 24 24"><path d="M12 4v10m0 0-4-4m4 4 4-4M5 19h14"/></svg></i>Depositar</button>
-<button class="rap" data-n="Transferir"><i><svg viewBox="0 0 24 24"><path d="M5 8h14m0 0-4-4m4 4-4 4M19 16H5m0 0 4-4m-4 4 4 4"/></svg></i>Transferir<small>em breve</small></button>
+<button class="rap" data-r="tr"><i><svg viewBox="0 0 24 24"><path d="M5 8h14m0 0-4-4m4 4-4 4M19 16H5m0 0 4-4m-4 4 4 4"/></svg></i>Transferir</button>
 <button class="rap" data-n="Pagar"><i><svg viewBox="0 0 24 24"><path d="M5 6v12M9 6v12M13 6v12M17 6v12M20 6v12"/></svg></i>Pagar<small>em breve</small></button>
 <button class="rap" data-n="Crédito"><i><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10c0-1 1-1.5 2.5-1.5s2.5.5 2.5 1.5-1 1.3-2.5 1.5-2.5.6-2.5 1.6 1 1.5 2.5 1.5 2.5-.5 2.5-1.5"/></svg></i>Crédito<small>em breve</small></button>
 <button class="rap" data-n="Investimentos"><i><svg viewBox="0 0 24 24"><path d="M4 18l5-6 4 3 7-9M15 6h5v5"/></svg></i>Investir<small>em breve</small></button>
@@ -142,10 +142,18 @@ dialog::backdrop{background:rgba(0,0,0,.75)}.abas{display:flex;gap:1.2rem;margin
 <button class="btn cheio" id="dep">Enviar pedido</button><p class="aviso" id="avDep"></p>
 <p class="vazio">O valor só entra no saldo depois que o administrador aprovar.</p>
 <h3 style="margin-top:1.6rem">Meus pedidos</h3><div id="meusPed"></div></div>
+<div class="painel" id="pTr" style="margin-bottom:1.2rem"><h3>Transferir</h3>
+<label class="t">Para (nome do personagem)<input id="tn" maxlength="40" autocomplete="off"></label>
+<label class="t">Valor<input id="tv" type="number" min="1" max="1000000" step="1" inputmode="numeric"></label>
+<label class="t">Motivo (opcional)<input id="tm" maxlength="140"></label>
+<button class="btn cheio" id="trb">Enviar transferência</button><p class="aviso" id="avTr"></p>
+<p class="vazio">O dinheiro só sai e entra depois que o administrador aprovar.</p>
+<h3 style="margin-top:1.6rem">Minhas transferências</h3><div id="meusTr"></div></div>
 <div class="painel" id="extratoSec" style="margin-bottom:2rem"><h3>Extrato</h3><div id="extrato"></div></div>
 </div>
 <div class="wrap" id="admin" hidden style="padding-bottom:4rem"><h2>Administração</h2><div class="grade">
 <div class="painel"><h3>Depósitos pendentes</h3><div id="pend"></div></div>
+<div class="painel"><h3>Transferências pendentes</h3><div id="pendT"></div></div>
 <div class="painel"><h3>Ajustar saldo</h3>
 <label class="t">Personagem<select id="aj"></select></label>
 <label class="t">Valor (negativo para retirar)<input id="ajv" type="number" step="1" inputmode="numeric"></label>
@@ -166,7 +174,7 @@ dialog::backdrop{background:rgba(0,0,0,.75)}.abas{display:flex;gap:1.2rem;margin
 import {firebaseConfig,ADMIN_UID} from "./firebase-config.js";
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,sendPasswordResetEmail,deleteUser} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-import {getFirestore,doc,collection,writeBatch,onSnapshot,query,where,addDoc,serverTimestamp,runTransaction} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getFirestore,doc,collection,writeBatch,onSnapshot,query,where,addDoc,serverTimestamp,runTransaction,getDoc,getDocs} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const $=id=>document.getElementById(id),brl=n=>n.toLocaleString("pt-BR",{style:"currency",currency:"BRL"});
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const dt=t=>t&&t.toDate?t.toDate().toLocaleString("pt-BR",{dateStyle:"short",timeStyle:"short"}):"agora";
@@ -196,7 +204,7 @@ $("esq").onclick=async()=>{const e=$("e").value.trim();if(!ok||!e){$("av").textC
  try{await sendPasswordResetEmail(auth,e);$("av").textContent="Enviamos um e-mail para criar nova senha (veja o spam)."}catch(x){$("av").textContent=msg(x)}};
 /* painel */
 const un=()=>{subs.forEach(f=>f());subs=[]};
-let pers=[],ativo=null,peds=[],ext=[],oculto=false;
+let pers=[],ativo=null,peds=[],ext=[],trs=[],oculto=false;
 const cur=()=>pers.find(p=>p.id===ativo);
 function desenha(){
  const c=cur();
@@ -206,11 +214,13 @@ function desenha(){
  $("lista").innerHTML=pers.map(p=>`<div class="item"><span>${esc(p.nome)}<small>${brl(p.saldo)}</small></span>${p.id===ativo?'<span class="pos">ativo</span>':`<button class="btn mini" data-use="${p.id}">Usar</button>`}</div>`).join("")||'<p class="vazio">Você ainda não tem personagem.</p>';
  const mp=peds.filter(p=>p.charId===ativo);
  $("meusPed").innerHTML=mp.length?mp.map(p=>`<div class="item"><span>${brl(p.valor)}<small>${dt(p.criadoEm)}${p.motivo?" · "+esc(p.motivo):""}</small></span><span class="${p.status}">${p.status}</span></div>`).join(""):'<p class="vazio">Nenhum pedido ainda.</p>';
+ const mt=trs.filter(t=>t.deCharId===ativo);
+ $("meusTr").innerHTML=mt.length?mt.map(t=>`<div class="item"><span>${brl(t.valor)} para ${esc(t.paraNome)}<small>${dt(t.criadoEm)}${t.motivo?" · "+esc(t.motivo):""}</small></span><span class="${t.status}">${t.status}</span></div>`).join(""):'<p class="vazio">Nenhuma transferência ainda.</p>';
  const mx=ext.filter(x=>x.charId===ativo);
  $("extrato").innerHTML=mx.length?mx.map(x=>`<div class="item"><span>${esc(x.tipo)}<small>${dt(x.criadoEm)} · saldo ${brl(x.saldoApos)}</small></span><span class="${x.valor<0?"neg":"pos"}">${x.valor<0?"−":"+"}${brl(Math.abs(x.valor))}</span></div>`).join(""):'<p class="vazio">Nenhuma movimentação ainda.</p>';
 }
 if(ok)onAuthStateChanged(auth,u=>{
- un();user=u;pers=[];peds=[];ext=[];ativo=null;
+ un();user=u;pers=[];peds=[];ext=[];trs=[];ativo=null;
  $("publico").hidden=!!u;$("app").hidden=!u;$("btnConta").textContent=u?"Sair":"Acessar minha conta";
  if(!u)return;
  const adm=u.uid===ADMIN_UID;$("admin").hidden=!adm;
@@ -219,10 +229,14 @@ if(ok)onAuthStateChanged(auth,u=>{
   if(!pers.some(p=>p.id===ativo))ativo=pers[0]?pers[0].id:null;desenha()}));
  subs.push(onSnapshot(query(collection(db,"pedidos"),where("ownerUid","==",u.uid)),s=>{peds=ord(s.docs.map(d=>d.data()));desenha()}));
  subs.push(onSnapshot(query(collection(db,"extrato"),where("ownerUid","==",u.uid)),s=>{ext=ord(s.docs.map(d=>d.data()));desenha()}));
+ subs.push(onSnapshot(query(collection(db,"transferencias"),where("ownerUid","==",u.uid)),s=>{trs=ord(s.docs.map(d=>d.data()));desenha()}));
  if(!adm)return;
  subs.push(onSnapshot(query(collection(db,"pedidos"),where("status","==","pendente")),s=>{
   const l=ord(s.docs.map(d=>({id:d.id,...d.data()}))).reverse();
   $("pend").innerHTML=l.length?l.map(p=>`<div class="item"><span>${esc(p.nome)} · ${brl(p.valor)}<small>${dt(p.criadoEm)}${p.motivo?" · "+esc(p.motivo):""}</small></span><span><button class="btn mini cheio" data-id="${p.id}" data-ok="1">Aprovar</button> <button class="btn mini" data-id="${p.id}">Recusar</button></span></div>`).join(""):'<p class="vazio">Nenhum pedido pendente.</p>'}));
+ subs.push(onSnapshot(query(collection(db,"transferencias"),where("status","==","pendente")),s=>{
+  const l=ord(s.docs.map(d=>({id:d.id,...d.data()}))).reverse();
+  $("pendT").innerHTML=l.length?l.map(t=>`<div class="item"><span>${esc(t.deNome)} → ${esc(t.paraNome)} · ${brl(t.valor)}<small>${dt(t.criadoEm)}${t.motivo?" · "+esc(t.motivo):""}</small></span><span><button class="btn mini cheio" data-id="${t.id}" data-ok="1">Aprovar</button> <button class="btn mini" data-id="${t.id}">Recusar</button></span></div>`).join(""):'<p class="vazio">Nenhuma transferência pendente.</p>'}));
  subs.push(onSnapshot(collection(db,"personagens"),s=>{const v=$("aj").value;
   $("aj").innerHTML=s.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>a.nome.localeCompare(b.nome)).map(c=>`<option value="${c.id}">${esc(c.nome)} (${brl(c.saldo)})</option>`).join("");if(v)$("aj").value=v}));
 });
@@ -259,10 +273,35 @@ $("ajb").onclick=async()=>{const id=$("aj").value,v=+$("ajv").value,a=$("avAj");
   $("ajv").value="";$("am").value="";a.textContent="Saldo ajustado."}catch(x){a.textContent=msg(x)}};
 const toast=t=>{const e=$("toast");e.textContent=t;e.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>e.hidden=true,2800)};
 $("rapidas").onclick=e=>{const b=e.target.closest("button.rap");if(!b)return;
- if(b.dataset.r==="dep")$("pDep").scrollIntoView({behavior:"smooth"});else toast(b.dataset.n+" chega nas próximas fases do banco.")};
+ if(b.dataset.r)$(b.dataset.r==="dep"?"pDep":"pTr").scrollIntoView({behavior:"smooth"});else toast(b.dataset.n+" chega nas próximas fases do banco.")};
 $("banners").onclick=e=>{const b=e.target.closest(".ban");if(b)toast(b.dataset.n+" chega nas próximas fases do banco.")};
 $("olho").onclick=()=>{oculto=!oculto;desenha()};
-$("sair").onclick=()=>signOut(auth);
+$("trb").onclick=async()=>{const a=$("avTr"),c=cur(),nome=$("tn").value.trim(),k=chave(nome),v=+$("tv").value;a.textContent="";
+ if(!c){a.textContent="Crie um personagem primeiro.";return}
+ if(k.length<2){a.textContent="Digite o nome do personagem que vai receber.";return}
+ if(k===c.nomeKey){a.textContent="Você não pode transferir para o mesmo personagem.";return}
+ if(!Number.isInteger(v)||v<1||v>1000000){a.textContent="Digite um valor inteiro entre 1 e 1.000.000.";return}
+ if(v>c.saldo){a.textContent="Saldo insuficiente.";return}
+ try{const e=await getDoc(doc(db,"nomes",k));if(!e.exists()){a.textContent="Não existe personagem com esse nome.";return}
+  await addDoc(collection(db,"transferencias"),{ownerUid:user.uid,deCharId:c.id,deNome:c.nome,paraKey:k,paraNome:nome,valor:v,motivo:$("tm").value.trim(),status:"pendente",criadoEm:serverTimestamp()});
+  $("tn").value="";$("tv").value="";$("tm").value="";a.textContent="Transferência enviada. Aguarde a aprovação."}catch(x){a.textContent="Não foi possível enviar: "+msg(x)}};
+$("pendT").onclick=async e=>{const b=e.target.closest("button[data-id]");if(!b)return;const id=b.dataset.id,aprova=!!b.dataset.ok;
+ try{
+  const tr=doc(db,"transferencias",id);let rid=null;
+  if(aprova){const t=await getDoc(tr);if(!t.exists())throw new Error("Transferência não encontrada.");
+   const q=await getDocs(query(collection(db,"personagens"),where("nomeKey","==",t.data().paraKey)));
+   if(q.empty)throw new Error("O personagem de destino não existe mais.");rid=q.docs[0].id}
+  await runTransaction(db,async tx=>{
+   const t=await tx.get(tr);
+   if(!t.exists()||t.data().status!=="pendente")throw new Error("Essa transferência já foi decidida.");
+   if(!aprova){tx.update(tr,{status:"recusado"});return}
+   const d=t.data(),r1=doc(db,"personagens",d.deCharId),r2=doc(db,"personagens",rid),c1=await tx.get(r1),c2=await tx.get(r2);
+   if(c1.data().saldo<d.valor)throw new Error("Saldo insuficiente do remetente. Recuse ou ajuste o saldo.");
+   const s1=c1.data().saldo-d.valor,s2=c2.data().saldo+d.valor;
+   tx.update(r1,{saldo:s1});tx.update(r2,{saldo:s2});tx.update(tr,{status:"aprovado"});
+   tx.set(doc(collection(db,"extrato")),{ownerUid:c1.data().ownerUid,charId:d.deCharId,tipo:"Transferência enviada a "+c2.data().nome,valor:-d.valor,saldoApos:s1,criadoEm:serverTimestamp()});
+   tx.set(doc(collection(db,"extrato")),{ownerUid:c2.data().ownerUid,charId:rid,tipo:"Transferência recebida de "+c1.data().nome,valor:d.valor,saldoApos:s2,criadoEm:serverTimestamp()})})}
+ catch(x){alert(msg(x))}};
 </script>
 </body>
 </html>
